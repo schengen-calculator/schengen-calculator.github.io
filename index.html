@@ -19,7 +19,7 @@
       <div class="row">
         <div class="col-md-9">
 
-          <table class="table">
+          <table class="table", id="table">
             <thead>
               <tr>
                 <th scope="col">Date of Entry</th>
@@ -30,31 +30,8 @@
             </thead>
             <tbody>
               <tr>
-                <td><input type="date" class="form-control" id="startDateInput"></td>
-                <td><input type="date" class="form-control" id="startDateInput"></td>
-                <td><div class="text-bg-secondary p-2 rounded d-inline-block">12</div></td>
-                <td><button type="button" class="btn btn-danger">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
-                    <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"></path>
-                  </svg>
-                </button></td>
-              </tr>
-              <tr>
-                <td><input type="date" class="form-control" id="startDateInput"></td>
-                <td><input type="date" class="form-control" id="startDateInput"></td>
-                <td><div class="text-bg-secondary p-2 rounded d-inline-block">12</div></td>
-                <td>
-                  <button type="button" class="btn btn-danger">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
-                      <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"></path>
-                    </svg>
-                  </button>
-                </td>
-              </tr>
-
-              <tr>
-                <td><input type="date" class="form-control" id="emptyStartDateInput"></td>
-                <td><input type="date" class="form-control" id="emptyEndDateInput"></td>
+                <td><input type="date" class="form-control" id="emptyEntryDateInput"></td>
+                <td><input type="date" class="form-control" id="emptyExitDateInput"></td>
               </tr>
             </tbody>
           </table>
@@ -72,24 +49,7 @@
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-header text-bg-secondary mb-3">
-        Enter Stays
-      </div>
-      <div class="card-body">
-        <p class="card-text">No stay entries</p>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-header text-bg-danger mb-3">
-        Overstay
-      </div>
-      <div class="card-body">
-        <p class="card-text">Stay 30 in the last 180 days</p>
-      </div>
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="./script.js"></script>
   </body>
 </html>

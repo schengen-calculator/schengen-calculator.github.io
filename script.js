@@ -106,13 +106,13 @@ class SchengenCalculator {
     this.totalDays = 0
 
     this.controlDate = dayjs()
-    this.periodStartDate = this.controlDate.subtract(180, "day")
+    this.periodStartDate = this.controlDate.subtract(179, "day")
 
     let controlDateInputElement = document.getElementById("controlDateInput")
     controlDateInputElement.value = this.controlDate.format("YYYY-MM-DD")
     controlDateInputElement.addEventListener("change", (event) => {
       this.controlDate = dayjs(event.target.value)
-      this.periodStartDate = this.controlDate.subtract(180, "day")
+      this.periodStartDate = this.controlDate.subtract(179, "day")
       this.updatePermissionCard()
     })
 

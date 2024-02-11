@@ -97,8 +97,10 @@ class SchengenCalculator {
   totalDays
   permissionCard
   permissionCardText
+  tableBody
 
   constructor() {
+    this.tableBody = document.getElementById("table").getElementsByTagName('tbody')[0]
     this.permissionCard = document.getElementById("permissionCard")
     this.permissionCardText = document.getElementById("permissionCardText")
 
@@ -116,14 +118,20 @@ class SchengenCalculator {
       this.updatePermissionCard()
     })
 
+    document.getElementById("clearButton").addEventListener("click", () => { 
+      this.stays = []
+      this.tableBody.innerHTML = ""
+      this.addRow()
+      this.updateTotalDays()
+    })
+
     this.addRow()
     this.updatePermissionCard()
     return
   }
 
   addRow() {
-    let tableBody = document.getElementById("table").getElementsByTagName('tbody')[0]
-    let row = tableBody.insertRow()
+    let row = this.tableBody.insertRow()
 
     let entryDateElement = createDateInput()
     row.insertCell(0).appendChild(entryDateElement)

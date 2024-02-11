@@ -1,10 +1,3 @@
-class SchengenStay {
-  entryDate
-  exitDate
-  numDays
-}
-
-let stays = []
 function createDateInput() {
   let input = document.createElement("input")
   input.className = "form-control"
@@ -15,7 +8,7 @@ function createDateInput() {
 function createNumDaysLabel() {
   let label = document.createElement("div")
   label.className = "text-bg-secondary p-2 rounded d-inline-block"
-  let text = document.createTextNode("21")
+  let text = document.createTextNode("")
   label.appendChild(text)
   return label
 }
@@ -40,76 +33,104 @@ function createDeleteButton() {
   return button
 }
 
+class SchengenStay {
+  entryDate
+  exitDate
+  numDays
+  numDaysElement
+  rowElement
+  removeCallbacks
+
+  constructor(rowElement) {
+    this.rowElement = rowElement
+    this.removeCallbacks = []
+    this.numDays = 0
+  }
+
+  update () {
+    console.log("entryDate:", this.entryDate)
+    console.log("exitDate:", this.exitDate)
+
+    let newNumDays = 0
+
+    if (this.entryDate && this.exitDate) {
+      if (!this.numDaysElement) {
+        this.numDaysElement = createNumDaysLabel()
+
+        this.rowElement.insertCell(2).appendChild(this.numDaysElement)
+
+        let deleteButton = createDeleteButton()
+        deleteButton.addEventListener("click", (event) => {
+          for (const listener of this.removeCallbacks) {
+            listener()
+          }
+        })
+        this.rowElement.insertCell(3).appendChild(deleteButton)
+      }
+      newNumDays = 44
+    }
+
+    if (this.numDaysElement && newNumDays != this.numDays) {
+      this.numDays = newNumDays
+      this.numDaysElement.childNodes[0].nodeValue = this.numDays
+    }
+  }
+
+  onRemovedClicked(listener) {
+    this.removeCallbacks.push(listener)
+  }
+}
+
 class SchengenCalculator {
   controlDateInputElement
-  emptyEntryDateInputElement
-  emptyEntryDateInput
-  emptyExitDateInputElement
-  emptyExitDateInput  
+  stays
+  totalDays
 
   constructor() {
+    this.stays = []
+
     this.controlDateInputElement = document.getElementById("controlDateInput")
     this.controlDateInputElement.addEventListener("change", function(event) {
       var selectedDate = event.target.value
       console.log("Selected date:", selectedDate)
     })
 
-    this.emptyEntryDateInputElement = document.getElementById("emptyEntryDateInput")
-    this.emptyEntryDateInputEvent = this.emptyEntryDateInputEvent.bind(this)
-    this.emptyEntryDateInputElement.addEventListener("change", this.emptyEntryDateInputEvent)
-    this.emptyExitDateInputElement = document.getElementById("emptyExitDateInput")
-    this.emptyExitDateInputEvent = this.emptyExitDateInputEvent.bind(this)
-    this.emptyExitDateInputElement.addEventListener("change", this.emptyExitDateInputEvent)
+    this.addRow()
+    return
   }
 
-  addRow(entryDate, exitDate) {
-    console.log("addRow", entryDate, exitDate)
+  addRow() {
     let tableBody = document.getElementById("table").getElementsByTagName('tbody')[0]
-
-    console.log(tableBody.rows.length)
-
-    let row = tableBody.insertRow(tableBody.rows.length - 1)
-
-    let entryDateCell = row.insertCell(0)
-    let exitDateCell = row.insertCell(1)
-    let numStaysCell = row.insertCell(2)
-    let deleteButtonCell = row.insertCell(3)
+    let row = tableBody.insertRow()
 
     let entryDateElement = createDateInput()
-    entryDateElement.value = entryDate
-    entryDateCell.appendChild(entryDateElement)
+    row.insertCell(0).appendChild(entryDateElement)
+
     let exitDateElement = createDateInput()
-    exitDateElement.value = exitDate
-    exitDateCell.appendChild(exitDateElement)
-    numStaysCell.appendChild(createNumDaysLabel())
-    deleteButtonCell.appendChild(createDeleteButton())
+    row.insertCell(1).appendChild(exitDateElement)
+
+    let stay = new SchengenStay(row)
+    this.stays.push(stay)
+
+    entryDateElement.addEventListener("change", (event) => {
+      stay.entryDate = event.target.value
+      stay.update()
+      if (stay.numDaysElement && this.stays[this.stays.length - 1] === stay) {
+        this.addRow()
+      }
+    })
+    exitDateElement.addEventListener("change", (event) => {
+      stay.exitDate = event.target.value
+      stay.update()
+      if (stay.numDaysElement && this.stays[this.stays.length - 1] === stay) {
+        this.addRow()
+      }
+    })
+    stay.onRemovedClicked(() => {
+      row.remove()
+      this.stays.splice(this.stays.indexOf(stay), 1)
+    })
   }
-
-  addToList() {
-    if (!this.emptyEntryDateInput || !this.emptyExitDateInput) {
-      return
-    }
-    this.addRow(this.emptyEntryDateInput, this.emptyExitDateInput)
-
-    console.log("clear dates")
-
-    this.emptyEntryDateInput = ""
-    this.emptyExitDateInput = ""
-    console.log(this.emptyEntryDateInputElement.value)
-    this.emptyEntryDateInputElement.value = ""
-    console.log(this.emptyEntryDateInputElement.value)
-    this.emptyExitDateInputElement.value = ""
-  }
-
-  emptyEntryDateInputEvent(event) {
-    this.emptyEntryDateInput = event.target.value
-    this.addToList()
-  }
-
-  emptyExitDateInputEvent(event) {
-    this.emptyExitDateInput = event.target.value
-    this.addToList()
-  }
-}
+} 
 
 var calc = new SchengenCalculator()

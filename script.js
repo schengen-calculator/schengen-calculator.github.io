@@ -181,7 +181,7 @@ class SchengenCalculator {
 
   updatePermissionCard() { 
     let text = "Start of 180 days period: " + this.periodStartDate.format("L")
-    text += "\n Days of stay within 180 days: " + this.totalDays
+    text += "<br> Days of stay within 180 days: " + this.totalDays
     if (this.totalDays > 90) {
       this.permissionCard.className = "card-header text-bg-danger mb-3"
       this.permissionCard.textContent = "Overstay"
@@ -190,7 +190,7 @@ class SchengenCalculator {
       this.permissionCard.className = "card-header text-bg-success mb-3"
       this.permissionCard.textContent = "Stay permitted"
     }
-    this.permissionCardText.textContent = text
+    this.permissionCardText.innerHTML = text
   }
 }
 dayjs.extend(window.dayjs_plugin_localizedFormat)

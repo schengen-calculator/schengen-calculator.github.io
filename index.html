@@ -11,7 +11,7 @@
     
     <h3>Control Date</h3>
     
-    <input type="date" class="form-control" id="controlDateInput">
+    <input type="date" class="form-control" id="controlDateInput" required />
 
     <h3>Stays in Schengen Area</h3> 
 
@@ -34,11 +34,9 @@
         </div> 
         <div class="col-md-3">
           <div class="card"  style="position: sticky; top: 0;">
-            <div class="card-header text-bg-success mb-3">
-              Stay permitted
-            </div>
+            <div class="card-header text-bg-success mb-3" id="permissionCard"></div>
             <div class="card-body">
-              <p class="card-text">Stay 30 in the last 180 days</p>
+              <p class="card-text" id="permissionCardText"></p>
             </div>
           </div>
         </div>
@@ -46,6 +44,8 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.10/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.10/plugin/localizedFormat.js"></script>
     <script src="./script.js"></script>
   </body>
 </html>

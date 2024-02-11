@@ -40,10 +40,12 @@ class SchengenStay {
   numDaysElement
   rowElement
   removeCallbacks
+  numDaysChangedCallbacks
 
   constructor(rowElement) {
     this.rowElement = rowElement
     this.removeCallbacks = []
+    this.numDaysChangedCallbacks = []
     this.numDays = 0
   }
 
@@ -53,7 +55,7 @@ class SchengenStay {
 
     let newNumDays = 0
 
-    if (this.entryDate && this.exitDate) {
+    if (this.entryDate && this.exitDate && this.exitDate >= this.entryDate) {
       if (!this.numDaysElement) {
         this.numDaysElement = createNumDaysLabel()
 
@@ -67,35 +69,55 @@ class SchengenStay {
         })
         this.rowElement.insertCell(3).appendChild(deleteButton)
       }
-      newNumDays = 44
+      newNumDays = this.exitDate.diff(this.entryDate, "day") + 1
     }
 
     if (this.numDaysElement && newNumDays != this.numDays) {
       this.numDays = newNumDays
       this.numDaysElement.childNodes[0].nodeValue = this.numDays
+
+      for (const listener of this.numDaysChangedCallbacks) {
+        listener()
+      }
     }
   }
 
   onRemovedClicked(listener) {
     this.removeCallbacks.push(listener)
   }
+  onNumDaysChanged(listener) {
+    this.numDaysChangedCallbacks.push(listener)
+  }
 }
 
 class SchengenCalculator {
-  controlDateInputElement
+  controlDate
+  periodStartDate
   stays
   totalDays
+  permissionCard
+  permissionCardText
 
   constructor() {
-    this.stays = []
+    this.permissionCard = document.getElementById("permissionCard")
+    this.permissionCardText = document.getElementById("permissionCardText")
 
-    this.controlDateInputElement = document.getElementById("controlDateInput")
-    this.controlDateInputElement.addEventListener("change", function(event) {
-      var selectedDate = event.target.value
-      console.log("Selected date:", selectedDate)
+    this.stays = []
+    this.totalDays = 0
+
+    this.controlDate = dayjs()
+    this.periodStartDate = this.controlDate.subtract(180, "day")
+
+    let controlDateInputElement = document.getElementById("controlDateInput")
+    controlDateInputElement.value = this.controlDate.format("YYYY-MM-DD")
+    controlDateInputElement.addEventListener("change", (event) => {
+      this.controlDate = dayjs(event.target.value)
+      this.periodStartDate = this.controlDate.subtract(180, "day")
+      this.updatePermissionCard()
     })
 
     this.addRow()
+    this.updatePermissionCard()
     return
   }
 
@@ -113,15 +135,17 @@ class SchengenCalculator {
     this.stays.push(stay)
 
     entryDateElement.addEventListener("change", (event) => {
-      stay.entryDate = event.target.value
+      stay.entryDate = dayjs(event.target.value)
       stay.update()
+      exitDateElement.min = event.target.value
       if (stay.numDaysElement && this.stays[this.stays.length - 1] === stay) {
         this.addRow()
       }
     })
     exitDateElement.addEventListener("change", (event) => {
-      stay.exitDate = event.target.value
+      stay.exitDate = dayjs(event.target.value)
       stay.update()
+      entryDateElement.max = event.target.value
       if (stay.numDaysElement && this.stays[this.stays.length - 1] === stay) {
         this.addRow()
       }
@@ -129,8 +153,36 @@ class SchengenCalculator {
     stay.onRemovedClicked(() => {
       row.remove()
       this.stays.splice(this.stays.indexOf(stay), 1)
+      this.updateTotalDays()
+    })
+    stay.onNumDaysChanged(() => {
+      this.updateTotalDays()
     })
   }
-} 
 
+  updateTotalDays() {
+    let totalDays = 0
+    for (const stay of this.stays) {
+      totalDays += stay.numDays
+    }
+    if (this.totalDays !== totalDays) {
+      this.totalDays = totalDays
+      this.updatePermissionCard()
+    }
+  }
+
+  updatePermissionCard() {
+    let text = "Days since " + this.periodStartDate.format("L") + ": " + this.totalDays
+    if (this.totalDays > 90) {
+      this.permissionCard.className = "card-header text-bg-danger mb-3"
+      this.permissionCard.textContent = "Overstay"
+    }
+    else {
+      this.permissionCard.className = "card-header text-bg-success mb-3"
+      this.permissionCard.textContent = "Stay permitted"
+    }
+    this.permissionCardText.textContent = text
+  }
+}
+dayjs.extend(window.dayjs_plugin_localizedFormat)
 var calc = new SchengenCalculator()
